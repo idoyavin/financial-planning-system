@@ -1,0 +1,8 @@
+# Development dependencies.
+#
+# The package itself has none — the dashboard is served from the standard
+# library, so `make serve` works on a bare Python. These are only what the
+# tests and linter need.
+
+pytest==8.3.4
+ruff==0.8.4
