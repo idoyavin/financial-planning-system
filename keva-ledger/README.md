@@ -59,7 +59,8 @@ on the page and a figure in the JSON cannot drift apart.
 
 ## Logging a month
 
-Add an entry to `months` in `data/state.json`:
+Add an entry to `months` in the repository's `data/state.json` — the same file
+the website seeds from:
 
 ```json
 {

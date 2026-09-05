@@ -14,9 +14,12 @@ __all__ = ["Month", "Plan", "State", "Task", "DEFAULT_STATE_PATH", "load_state",
 
 __version__ = "0.1.0"
 
-DEFAULT_STATE_PATH = Path(__file__).resolve().parents[2] / "data" / "state.json"
+# One state file feeds the Python package, the tests and the website, so a
+# month logged anywhere shows up everywhere. It lives at the repository root
+# rather than inside this package because the site and finsys read it too.
+DEFAULT_STATE_PATH = Path(__file__).resolve().parents[3] / "data" / "state.json"
 
 
 def load_state(path: str | Path | None = None) -> State:
-    """Load the ledger, defaulting to the bundled ``data/state.json``."""
+    """Load the ledger, defaulting to the repository's ``data/state.json``."""
     return State.load(path or DEFAULT_STATE_PATH)

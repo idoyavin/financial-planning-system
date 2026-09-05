@@ -1,0 +1,749 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Keva Ledger — a standing financial plan, live from its own figures.">
+<title>Keva Ledger</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap">
+<style id="appstyle">
+:root{
+  --ground:#F4F3EF; --surface:#FFFFFF; --surface-2:#EDEBE5; --line:#D9D5CB;
+  --ink:#141821; --ink-2:#3D4552; --muted:#5E6675;
+  --brass:#7A5B1E; --brass-soft:#B8912F; --teal:#0D6360;
+  --good:#1C6E42; --warn:#9C4E0B; --bad:#9E1F1F;
+  --good-bg:#E4F0E8; --warn-bg:#F6EADC; --bad-bg:#F6E3E3; --teal-bg:#E0EDEC;
+  --shadow:0 1px 2px rgba(20,24,33,.06),0 8px 24px -12px rgba(20,24,33,.18);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#0F1218; --surface:#171C25; --surface-2:#1F2632; --line:#2C3542;
+  --ink:#E9ECF2; --ink-2:#C3C9D6; --muted:#8D97A8;
+  --brass:#D4AC46; --brass-soft:#8A6E2C; --teal:#4FA9A4;
+  --good:#5DC086; --warn:#E2A055; --bad:#EF8080;
+  --good-bg:#16281E; --warn-bg:#2A2113; --bad-bg:#2B1818; --teal-bg:#13272A;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -14px rgba(0,0,0,.7);
+}}
+:root[data-theme="dark"]{
+  --ground:#0F1218; --surface:#171C25; --surface-2:#1F2632; --line:#2C3542;
+  --ink:#E9ECF2; --ink-2:#C3C9D6; --muted:#8D97A8;
+  --brass:#D4AC46; --brass-soft:#8A6E2C; --teal:#4FA9A4;
+  --good:#5DC086; --warn:#E2A055; --bad:#EF8080;
+  --good-bg:#16281E; --warn-bg:#2A2113; --bad-bg:#2B1818; --teal-bg:#13272A;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -14px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+/* A class with a display rule outranks the UA's [hidden] rule, so hiding the
+   gate or the dashboard needs this to actually take effect. */
+[hidden]{display:none!important}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:"IBM Plex Sans Hebrew",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:32px 20px 96px}
+.num,.n{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+h1,h2,h3{text-wrap:balance;margin:0}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);font-weight:500}
+.he{unicode-bidi:isolate}
+.mast{border-bottom:2px solid var(--ink);padding-bottom:18px}
+.mast h1{font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;
+  font-size:clamp(27px,4.6vw,40px);letter-spacing:-.02em;line-height:1.05;margin:8px 0 6px}
+.mast .rule{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline}
+.mast p{margin:0;color:var(--muted);max-width:60ch;font-size:14.5px}
+button{font-family:inherit;font-size:14px;cursor:pointer;border-radius:4px;
+  border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:9px 16px;font-weight:500}
+button:hover{border-color:var(--brass)}
+button:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+button.primary{background:var(--brass);border-color:var(--brass);color:var(--ground);font-weight:600}
+button.primary:hover{filter:brightness(1.08)}
+button[disabled]{opacity:.5;cursor:not-allowed}
+button.ghost{background:transparent}
+.actionbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:20px 0 0}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:1px;
+  background:var(--line);border:1px solid var(--line);margin:26px 0 40px;border-radius:3px;overflow:hidden}
+.stat{background:var(--surface);padding:15px 17px}
+.stat .k{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
+.stat .v{font-family:"IBM Plex Mono",monospace;font-size:23px;font-weight:600;
+  letter-spacing:-.02em;display:block;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat .s{font-size:12.5px;color:var(--muted);margin-top:4px;display:block}
+.up{color:var(--good)}.down{color:var(--bad)}.amber{color:var(--warn)}.br{color:var(--brass)}
+section{margin:0 0 42px}
+.shead{display:flex;align-items:baseline;gap:14px;margin-bottom:16px;
+  border-bottom:1px solid var(--line);padding-bottom:8px}
+.shead h2{font-family:"IBM Plex Serif",Georgia,serif;font-size:20px;font-weight:600}
+.shead .note{margin-left:auto;font-size:12.5px;color:var(--muted);text-align:right}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:19px 21px;box-shadow:var(--shadow)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:16px}
+.tscroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:380px}
+th{text-align:left;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);font-weight:500;padding:0 12px 8px 0;
+  border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:8px 12px 8px 0;border-bottom:1px solid var(--line);vertical-align:baseline}
+tr:last-child td{border-bottom:none}
+td.n,th.n{text-align:right;padding-right:0;white-space:nowrap}
+tr.total td{border-top:2px solid var(--ink);border-bottom:none;font-weight:700;padding-top:10px}
+.bar{height:8px;background:var(--surface-2);border-radius:4px;overflow:hidden;min-width:56px}
+.bar>span{display:block;height:100%;background:var(--brass);border-radius:4px}
+.bar.t>span{background:var(--teal)}
+.bar.g>span{background:var(--good)}
+.bar.w>span{background:var(--warn)}
+.bar.big{height:14px}
+.call{border-left:3px solid var(--warn);background:var(--warn-bg);padding:13px 17px;
+  border-radius:0 4px 4px 0;margin:14px 0;font-size:14.5px}
+.call.g{border-left-color:var(--good);background:var(--good-bg)}
+.call.t{border-left-color:var(--teal);background:var(--teal-bg)}
+.call strong{display:block;margin-bottom:3px;font-size:13px}
+.call p{margin:0;color:var(--ink-2)}
+.pill{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:10.5px;
+  letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:100px;
+  background:var(--surface-2);color:var(--muted);font-weight:500;white-space:nowrap}
+.pill.ok{background:var(--good-bg);color:var(--good)}
+.pill.w{background:var(--warn-bg);color:var(--warn)}
+.pill.b{background:var(--teal-bg);color:var(--teal)}
+dialog{border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);
+  padding:0;max-width:640px;width:calc(100% - 32px);box-shadow:0 24px 60px -20px rgba(0,0,0,.5)}
+dialog::backdrop{background:rgba(10,12,16,.55)}
+.dlg-head{padding:20px 24px 14px;border-bottom:1px solid var(--line)}
+.dlg-head h3{font-family:"IBM Plex Serif",Georgia,serif;font-size:19px;font-weight:600}
+.dlg-head p{margin:5px 0 0;color:var(--muted);font-size:13.5px}
+.dlg-body{padding:18px 24px;max-height:62vh;overflow-y:auto}
+.dlg-foot{padding:14px 24px 20px;border-top:1px solid var(--line);display:flex;gap:10px;
+  justify-content:flex-end;align-items:center;flex-wrap:wrap}
+fieldset{border:none;margin:0 0 18px;padding:0}
+legend{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);font-weight:500;padding:0 0 8px}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+label{display:block;font-size:12.5px;color:var(--ink-2);margin-bottom:4px}
+input[type=text],input[type=number],input[type=month]{
+  width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:4px;
+  background:var(--ground);color:var(--ink);font-family:"IBM Plex Mono",monospace;font-size:14px;
+  font-variant-numeric:tabular-nums}
+input:focus{outline:2px solid var(--brass);outline-offset:-1px;border-color:var(--brass)}
+.msg{font-size:13px;margin-right:auto}
+.msg.err{color:var(--bad)}.msg.ok{color:var(--good)}
+ol.check{list-style:none;counter-reset:c;margin:0;padding:0}
+ol.check li{counter-increment:c;position:relative;padding:12px 0 12px 44px;border-bottom:1px solid var(--line)}
+ol.check li:last-child{border-bottom:none}
+ol.check li.done b{text-decoration:line-through;color:var(--muted)}
+ol.check li.done span{color:var(--muted)}
+ol.check input[type=checkbox]{position:absolute;left:2px;top:14px;width:19px;height:19px;
+  accent-color:var(--brass);cursor:pointer}
+ol.check b{display:block;margin-bottom:2px;font-size:15px}
+ol.check span{color:var(--ink-2);font-size:14px}
+svg text{font-family:"IBM Plex Mono",monospace}
+.foot{border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:12.5px;max-width:72ch}
+.foot p{margin:0 0 7px}
+.banner{border-left:3px solid var(--teal);background:var(--teal-bg);padding:11px 15px;
+  border-radius:0 4px 4px 0;font-size:13.5px;color:var(--ink-2);margin:16px 0 0}
+.banner b{color:var(--ink)}
+.banner.warn{border-left-color:var(--warn);background:var(--warn-bg)}
+@media (max-width:560px){.wrap{padding:22px 13px 64px}.stat .v{font-size:20px}
+  .shead{flex-wrap:wrap}.shead .note{margin-left:0;text-align:left;width:100%}}
+@media (prefers-reduced-motion:no-preference){.bar>span{transition:width .4s ease}}
+@media print{.actionbar,.banner{display:none}.card{box-shadow:none}}
+/* sign-in gate */
+.gate{min-height:100svh;display:grid;place-items:center;padding:24px}
+.gate-card{background:var(--surface);border:1px solid var(--line);border-radius:6px;
+  box-shadow:var(--shadow);padding:34px 32px;max-width:430px;width:100%;text-align:center}
+.gate-card h1{font-family:"IBM Plex Serif",Georgia,serif;font-size:27px;font-weight:600;margin:10px 0 8px}
+.gate-card p{color:var(--muted);font-size:14px;margin:0 0 22px}
+.gate-card .mark{font-size:34px;line-height:1}
+.gate-btn{display:flex;justify-content:center;min-height:44px}
+.gate-note{margin:22px 0 0;font-size:12px;color:var(--muted);line-height:1.5}
+.gate-err{color:var(--bad);font-size:13.5px;margin:0 0 18px;min-height:1.2em}
+.who{display:flex;align-items:center;gap:9px;margin-left:auto;font-size:12.5px;color:var(--muted)}
+</style></head><body>
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="mark">📊</div>
+    <h1>Keva Ledger</h1>
+    <p>A standing financial plan. Sign in to continue.</p>
+    <p class="gate-err" id="gate-err"></p>
+    <div class="gate-btn" id="gsi-button"></div>
+    <p class="gate-note">Your figures are held server-side and released only to
+      the account they belong to. Signing in with any other Google account works,
+      but returns nothing.</p>
+  </div>
+</div>
+<div class="wrap" id="app" hidden></div>
+<div id="dlgshell"><dialog id="dlg" aria-labelledby="dlgtitle">
+  <form method="dialog" novalidate>
+    <div class="dlg-head">
+      <h3 id="dlgtitle">Log a month</h3>
+      <p id="dlgsub">Pre-filled with last month — change only what moved, leave the rest.</p>
+    </div>
+    <div class="dlg-body">
+      <fieldset>
+        <legend>Month</legend>
+        <div class="fgrid"><div><label for="f-month">Which month</label>
+          <input type="month" id="f-month" name="month" required></div></div>
+      </fieldset>
+      <fieldset>
+        <legend>Balances</legend>
+        <div class="fgrid">
+          <div><label for="f-bank">Bank (Poalim)</label><input type="number" step="0.01" id="f-bank" name="bank"></div>
+          <div><label for="f-analyst"><span class="he">אנליסט</span></label><input type="number" step="0.01" id="f-analyst" name="analyst"></div>
+          <div><label for="f-blink">Blink</label><input type="number" step="0.01" id="f-blink" name="blink"></div>
+          <div><label for="f-crypto">Crypto</label><input type="number" step="0.01" id="f-crypto" name="crypto"></div>
+          <div><label for="f-carRem">Car still owed</label><input type="number" step="0.01" id="f-carRem" name="carRem"></div>
+          <div><label for="f-insPot">Insurance pot</label><input type="number" step="0.01" id="f-insPot" name="insPot"></div>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Card spending this month</legend>
+        <div class="fgrid">
+          <div><label for="f-sp_food"><span class="he">אוכל בחוץ</span></label><input type="number" step="0.01" id="f-sp_food" name="sp_food"></div>
+          <div><label for="f-sp_fuel"><span class="he">דלק</span></label><input type="number" step="0.01" id="f-sp_fuel" name="sp_fuel"></div>
+          <div><label for="f-sp_groceries"><span class="he">מכולת</span></label><input type="number" step="0.01" id="f-sp_groceries" name="sp_groceries"></div>
+          <div><label for="f-sp_shopping"><span class="he">קניות</span></label><input type="number" step="0.01" id="f-sp_shopping" name="sp_shopping"></div>
+          <div><label for="f-sp_transfers"><span class="he">העברות (bit out)</span></label><input type="number" step="0.01" id="f-sp_transfers" name="sp_transfers"></div>
+          <div><label for="f-sp_other">Everything else</label><input type="number" step="0.01" id="f-sp_other" name="sp_other"></div>
+        </div>
+      </fieldset>
+      <fieldset style="margin-bottom:0">
+        <legend>Note (optional)</legend>
+        <input type="text" id="f-note" name="note" placeholder="paid מקיף · trip to Eilat · bonus landed">
+      </fieldset>
+    </div>
+    <div class="dlg-foot">
+      <button type="button" class="ghost" id="cancel">Cancel</button>
+      <button type="submit" class="primary">Save month</button>
+    </div>
+  </form>
+</dialog></div>
+
+<script id="appscript">
+(function(){
+"use strict";
+
+/* ------------------------------------------------------------------
+   Auth and persistence.
+
+   The artifact this came from saved through window.claude.use('artifact'),
+   which exists only inside claude.ai. Here the page is a shell: it holds no
+   figures of its own and cannot, because it is served from a public URL.
+   Everything arrives from /api/state, which releases the ledger only to a
+   verified Google account on the allowlist, and stores it in Netlify Blobs.
+
+   localStorage is kept for exactly one job: holding an edit that failed to
+   reach the server, so a dropped connection never costs you the month you
+   just typed in.
+   ------------------------------------------------------------------ */
+
+var API = "/api/state";
+var PENDING_KEY = "keva-ledger:pending";
+var TOKEN = null;      // Google ID token, this tab only
+var WHO = null;        // { email, name }
+var S = null;          // the ledger as the server last confirmed it
+var PENDING = null;    // an edit the server has not accepted yet
+
+function readPending(){
+  try{ var r = sessionStorage.getItem(PENDING_KEY); return r ? JSON.parse(r) : null; }
+  catch(e){ return null; }
+}
+function writePending(v){
+  try{
+    if(v === null) sessionStorage.removeItem(PENDING_KEY);
+    else sessionStorage.setItem(PENDING_KEY, JSON.stringify(v));
+    return true;
+  }catch(e){ return false; }
+}
+
+function authHeaders(){
+  return {"authorization":"Bearer "+TOKEN,"content-type":"application/json"};
+}
+
+/** GET the ledger. Resolves to the state, or rejects with a readable reason. */
+function loadState(){
+  return fetch(API,{headers:authHeaders(),cache:"no-store"}).then(function(r){
+    return r.json().catch(function(){ return {}; }).then(function(body){
+      if(r.ok) return body;
+      var err = new Error(body.hint || body.error || ("HTTP "+r.status));
+      err.status = r.status;
+      throw err;
+    });
+  });
+}
+
+/** PUT the ledger. Resolves to the saved state. */
+function saveState(next){
+  return fetch(API,{method:"PUT",headers:authHeaders(),body:JSON.stringify(next)}).then(function(r){
+    return r.json().catch(function(){ return {}; }).then(function(body){
+      if(r.ok) return body.state;
+      var err = new Error(body.error || ("HTTP "+r.status));
+      err.status = r.status;
+      throw err;
+    });
+  });
+}
+
+/** Apply an edit: optimistic on screen, authoritative once the server agrees. */
+function commit(next, okMsg){
+  var before = S;
+  S = next;
+  render();
+  say("Saving…");
+  return saveState(next).then(function(saved){
+    S = saved; PENDING = null; writePending(null);
+    render();
+    say(okMsg || "Saved.","ok");
+    return true;
+  }).catch(function(e){
+    PENDING = next; writePending(next);
+    render();
+    if(e.status === 401){
+      say("Your sign-in expired — sign in again and the change will be retried.","err");
+      TOKEN = null; showGate("Session expired. Sign in to continue.");
+    } else {
+      say("Could not save: "+e.message+". Your entry is kept — press Retry.","err");
+    }
+    S = next; // keep what was typed on screen rather than silently reverting
+    void before;
+    return false;
+  });
+}
+
+/* ---------- helpers ---------- */
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function m0(n){return '₪'+Math.round(n).toLocaleString('en-US');}
+function m2(n){return '₪'+Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function pc(n,d){return (n*100).toFixed(d===undefined?1:d)+'%';}
+function ymAdd(ym,k){var p=ym.split('-'),y=+p[0],m=+p[1]-1+k;return (y+Math.floor(m/12))+'-'+String((m%12+12)%12+1).padStart(2,'0');}
+function ymDiff(a,b){var x=a.split('-'),y=b.split('-');return (+y[0]-+x[0])*12+(+y[1]-+x[1]);}
+function ymLabel(ym){var p=ym.split('-');var M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return M[+p[1]-1]+" '"+p[0].slice(2);}
+function ymLong(ym){var p=ym.split('-');var M=['January','February','March','April','May','June','July','August','September','October','November','December'];return M[+p[1]-1]+' '+p[0];}
+var MS=function(){return S.months.slice().sort(function(a,b){return a.m<b.m?-1:1;});};
+function last(){var a=MS();return a[a.length-1];}
+function prev(){var a=MS();return a.length>1?a[a.length-2]:null;}
+function nw(r){return r.bank+r.analyst+r.blink+r.crypto;}
+function inv(r){return r.analyst+r.blink+r.crypto;}
+function spendTotal(r){var t=0;for(var k in r.spend)t+=r.spend[k];return t;}
+function spendCore(r){return spendTotal(r)-(r.spend.transfers||0);}
+
+/* ---------- insurance schedule ----------
+   חובה over eight instalments August→March; מקיף as one lump in November
+   2026, then over three in August–October from 2027. */
+function dueIn(ym){
+  var p=ym.split('-'),y=+p[0],mo=+p[1],out={makif:0,hova:0};
+  if([8,9,10,11,12,1,2,3].indexOf(mo)>=0) out.hova=S.plan.hovaYear/S.plan.hovaN;
+  if(y===2026){ if(mo===11) out.makif=S.plan.makifYear; }
+  else if(y>2026){ if([8,9,10].indexOf(mo)>=0) out.makif=S.plan.makifYear/S.plan.makifN; }
+  out.total=out.makif+out.hova; return out;
+}
+function nextDue(from){for(var i=1;i<=14;i++){var ym=ymAdd(from,i),d=dueIn(ym);if(d.total>0)return {ym:ym,d:d};}return null;}
+
+/* ---------- car ----------
+   Repayment starts with the December sprint, not the month after the last
+   entry, so the payoff date does not drift earlier as months are logged. */
+function firstPaymentMonth(fromYm){
+  var nextM = ymAdd(fromYm,1), start = S.plan.sprintStart || "2026-12";
+  return nextM > start ? nextM : start;
+}
+function paymentsLeft(L){
+  if(L.carRem<=0) return 0;
+  var bal = L.carRem;
+  if(bal > S.plan.carTotal - S.plan.grant) bal -= S.plan.grant;
+  return bal<=0 ? 0 : Math.ceil(bal/S.plan.carMonthly);
+}
+function payoffMonth(L){
+  var n = paymentsLeft(L);
+  return n===0 ? null : ymAdd(firstPaymentMonth(L.m), n-1);
+}
+
+/* ---------- projection ---------- */
+function project(rate){
+  var L=last(), r=(rate===undefined?S.plan.realReturn:rate)/12;
+  var v=inv(L), ym=L.m, n=ymDiff(L.m,S.plan.contractEnd);
+  for(var i=0;i<n;i++){
+    ym=ymAdd(ym,1);
+    var c = (ym<=S.plan.sprintEnd) ? S.plan.analystSprint : (S.plan.analystFull+S.plan.satellite);
+    v = v*(1+r)+c;
+  }
+  return v + S.plan.emergencyTarget + S.plan.pikadon;
+}
+
+/* ---------- charts ---------- */
+function lineChart(pts,w,h,fmt){
+  if(pts.length<2) return '<p style="color:var(--muted);font-size:13.5px;margin:0;padding:22px 0;text-align:center">One data point so far. The line appears once you log a second month.</p>';
+  var pad={l:52,r:14,t:16,b:26};
+  var vs=pts.map(function(p){return p.v;}), mx=Math.max.apply(null,vs), mn=Math.min.apply(null,vs);
+  var span=(mx-mn)||1; mx=mx+span*0.15; mn=Math.max(0,mn-span*0.15); span=mx-mn||1;
+  var X=function(i){return pad.l+(w-pad.l-pad.r)*(pts.length===1?0:i/(pts.length-1));};
+  var Y=function(v){return pad.t+(h-pad.t-pad.b)*(1-(v-mn)/span);};
+  var d=pts.map(function(p,i){return (i?'L':'M')+X(i).toFixed(1)+','+Y(p.v).toFixed(1);}).join(' ');
+  var area=d+' L'+X(pts.length-1).toFixed(1)+','+(h-pad.b)+' L'+X(0).toFixed(1)+','+(h-pad.b)+' Z';
+  var grid='',lab='';
+  for(var g=0;g<=3;g++){var gv=mn+span*g/3, gy=Y(gv);
+    grid+='<line x1="'+pad.l+'" y1="'+gy.toFixed(1)+'" x2="'+(w-pad.r)+'" y2="'+gy.toFixed(1)+'" stroke="var(--line)" stroke-width="1"'+(g?' stroke-dasharray="2 4"':'')+'/>';
+    lab+='<text x="'+(pad.l-8)+'" y="'+(gy+3.5).toFixed(1)+'" fill="var(--muted)" font-size="9.5" text-anchor="end">'+(fmt?fmt(gv):Math.round(gv/1000)+'k')+'</text>';}
+  var xt='',step=Math.max(1,Math.ceil(pts.length/6)),idx=[];
+  for(var i=0;i<pts.length;i+=step) idx.push(i);
+  if(idx[idx.length-1]!==pts.length-1) idx.push(pts.length-1);
+  idx.forEach(function(i){
+    var a=i===0?'start':(i===pts.length-1?'end':'middle');
+    xt+='<text x="'+X(i).toFixed(1)+'" y="'+(h-8)+'" fill="var(--muted)" font-size="9.5" text-anchor="'+a+'">'+esc(pts[i].k)+'</text>';});
+  var lastX=X(pts.length-1),lastY=Y(pts[pts.length-1].v);
+  return '<svg viewBox="0 0 '+w+' '+h+'" style="width:100%;height:auto;display:block" role="img" aria-label="Trend from '+esc(pts[0].k)+' to '+esc(pts[pts.length-1].k)+'">'
+    +'<defs><linearGradient id="lg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--brass)" stop-opacity=".28"/><stop offset="100%" stop-color="var(--brass)" stop-opacity=".02"/></linearGradient></defs>'
+    +grid+lab+xt
+    +'<path d="'+area+'" fill="url(#lg)"/>'
+    +'<path d="'+d+'" fill="none" stroke="var(--brass)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>'
+    +'<circle cx="'+lastX.toFixed(1)+'" cy="'+lastY.toFixed(1)+'" r="4.5" fill="var(--brass)"/></svg>';
+}
+function barRow(label,val,max,cls,right){
+  var w=max>0?Math.max(2,Math.min(100,val/max*100)):0;
+  return '<tr><td>'+label+'</td><td class="n">'+(right||m0(val))+'</td>'
+    +'<td style="width:34%"><div class="bar '+(cls||'')+'"><span style="width:'+w.toFixed(1)+'%"></span></div></td></tr>';
+}
+
+/* ---------- render ---------- */
+function render(){
+  var L=last(), P=prev(), pl=S.plan;
+  var netNow=nw(L), netPrev=P?nw(P):null, delta=netPrev===null?null:netNow-netPrev;
+  var carPaid=pl.carTotal-L.carRem, carPct=carPaid/pl.carTotal;
+  var satPct=inv(L)>0?(L.blink+L.crypto)/inv(L):0;
+  var nd=nextDue(L.m);
+  var proj=project(), projLo=project(0.04), projHi=project(0.08);
+  var done=S.tasks.filter(function(t){return t.done;}).length;
+  var left=paymentsLeft(L), payoff=payoffMonth(L);
+
+  var h='';
+  h+='<header class="mast"><div class="rule"><span class="eyebrow">Financial plan · Ido Yavin</span>'
+    +'<span class="eyebrow">Latest entry · '+esc(ymLong(L.m))+'</span></div>'
+    +'<h1>From '+m0(netNow)+' to '+m0(proj)+'</h1>'
+    +'<p>Live from your own figures. Log the month, and every number, chart and projection on this page moves with it.</p></header>';
+  h+='<div class="actionbar" id="bar"></div><div id="banners"></div>';
+
+  h+='<div class="strip">'
+    +'<div class="stat"><span class="k">Net worth</span><span class="v">'+m0(netNow)+'</span><span class="s">'
+      +(delta===null?'first month logged':(delta>=0?'<span class="up">+'+m0(delta)+'</span>':'<span class="down">-'+m0(-delta)+'</span>')+' since '+ymLabel(P.m))+'</span></div>'
+    +'<div class="stat"><span class="k">Car remaining</span><span class="v '+(L.carRem>0?'amber':'up')+'">'+m0(L.carRem)+'</span><span class="s">'
+      +(L.carRem<=0?'paid off — well done'
+        :(L.carRem>pl.carTotal-pl.grant
+          ? m0(pl.grant)+' מענק still to land, then '+left+' payments'
+          : left+' payments of '+m0(pl.carMonthly)+' left'))+'</span></div>'
+    +'<div class="stat"><span class="k">Satellite share</span><span class="v '+(satPct>pl.satCap?'down':'up')+'">'+pc(satPct)+'</span><span class="s">'
+      +(satPct>pl.satCap?'over the '+pc(pl.satCap,0)+' cap — trim it':'under the '+pc(pl.satCap,0)+' cap')+'</span></div>'
+    +'<div class="stat"><span class="k">Insurance pot</span><span class="v br">'+m0(L.insPot)+'</span><span class="s">'
+      +(nd?m0(nd.d.total)+' due '+ymLabel(nd.ym):'nothing due in the next year')+'</span></div>'
+    +'</div>';
+
+  /* NET WORTH */
+  h+='<section><div class="shead"><h2>Net worth</h2><span class="note">'+MS().length+' month'+(MS().length===1?'':'s')+' logged</span></div>'
+    +'<div class="card">'+lineChart(MS().map(function(r){return {k:ymLabel(r.m),v:nw(r)};}),780,230)+'</div>'
+    +'<div class="card tscroll" style="margin-top:16px"><table><thead><tr><th>Month</th><th class="n">Bank</th>'
+    +'<th class="n"><span class="he">אנליסט</span></th><th class="n">Blink</th><th class="n">Crypto</th><th class="n">Net worth</th><th class="n">Change</th></tr></thead><tbody>';
+  var arr=MS();
+  for(var i=arr.length-1;i>=0;i--){var r=arr[i],pv=i>0?nw(arr[i-1]):null,dv=pv===null?null:nw(r)-pv;
+    h+='<tr><td>'+esc(ymLabel(r.m))+(r.note?' <span class="pill" title="'+esc(r.note)+'">note</span>':'')+'</td>'
+      +'<td class="n">'+m0(r.bank)+'</td><td class="n">'+m0(r.analyst)+'</td><td class="n">'+m0(r.blink)+'</td>'
+      +'<td class="n">'+m0(r.crypto)+'</td><td class="n" style="font-weight:600">'+m0(nw(r))+'</td>'
+      +'<td class="n '+(dv===null?'':(dv>=0?'up':'down'))+'">'+(dv===null?'—':(dv>=0?'+':'-')+m0(Math.abs(dv)))+'</td></tr>';}
+  h+='</tbody></table></div></section>';
+
+  /* CAR */
+  h+='<section><div class="shead"><h2>Car payoff</h2><span class="note">'+m0(pl.carTotal)+' total · '+m0(pl.carMonthly)+'/month from December</span></div>'
+    +'<div class="grid2"><div class="card">'
+    +'<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">'
+    +'<span class="eyebrow">Paid so far</span><span class="num" style="font-weight:600;font-size:18px">'+m0(carPaid)+' / '+m0(pl.carTotal)+'</span></div>'
+    +'<div class="bar big g"><span style="width:'+Math.max(0,carPct*100).toFixed(1)+'%"></span></div>'
+    +'<p style="margin:12px 0 0;color:var(--ink-2);font-size:14px">'
+    +(L.carRem<=0?'Paid off. From next month the '+m0(pl.carMonthly)+' goes to <span class="he">אנליסט</span> instead — raise the order to '+m0(pl.analystFull)+' the same day.'
+      :(L.carRem>pl.carTotal-pl.grant
+        ? 'Nothing paid yet. The '+m0(pl.grant)+' <span class="he">מענק</span> lands in November and goes straight on, leaving '+m0(L.carRem-pl.grant)+' — then <b>'+left+' payments of '+m0(pl.carMonthly)+'</b>, clearing '+esc(ymLong(payoff))+'.'
+        : '<b>'+pc(carPct)+'</b> down, '+m0(L.carRem)+' to go. At '+m0(pl.carMonthly)+' a month that is <b>'+left+' more payments</b>, clearing '+esc(ymLong(payoff))+'.'))+'</p></div>'
+    +'<div class="card"><span class="eyebrow">The sprint</span>'
+    +'<h3 style="font-family:\'IBM Plex Serif\',Georgia,serif;font-size:18px;font-weight:600;margin:9px 0 10px">Five hard months, then it runs itself</h3>'
+    +'<p style="margin:0 0 12px;color:var(--ink-2);font-size:14px">'+m0(pl.carMonthly)+' a month from December through April 2027 clears the '+m0(pl.carTotal-pl.grant)+' left after the <span class="he">מענק</span>. During those five months <span class="he">אנליסט</span> runs at '+m0(pl.analystSprint)+' and Blink pauses entirely.</p>'
+    +'<div class="call t" style="margin:0"><strong>Sprinting costs ₪17</strong><p>Against clearing it slowly by May 2028. Five months of a smaller order, then thirteen extra months at the full '+m0(pl.analystFull)+'. It cancels out — so being debt-free a year earlier is effectively free.</p></div></div></div></section>';
+
+  /* SPENDING */
+  var sc=spendCore(L), tgt=pl.spendTarget, over=sc-tgt;
+  var cats=[['food','אוכל בחוץ'],['fuel','דלק'],['groceries','מכולת'],['shopping','קניות'],['transfers','העברות (bit out)'],['other','Everything else']];
+  var mxc=Math.max.apply(null,cats.map(function(c){return L.spend[c[0]]||0;}));
+  h+='<section><div class="shead"><h2>Spending against target</h2><span class="note">'+esc(ymLong(L.m))+' · target '+m0(tgt)+' excluding bit transfers</span></div>'
+    +'<div class="grid2"><div class="card tscroll"><table><thead><tr><th>Category</th><th class="n">Spent</th><th>Share</th></tr></thead><tbody>';
+  cats.forEach(function(c){h+=barRow('<span class="he">'+esc(c[1])+'</span>',L.spend[c[0]]||0,mxc,c[0]==='transfers'?'t':'');});
+  h+='<tr class="total"><td>Total on the card</td><td class="n">'+m0(spendTotal(L))+'</td><td></td></tr>'
+    +'</tbody></table></div>'
+    +'<div class="card"><span class="eyebrow">Core spending vs target</span>'
+    +'<div style="display:flex;justify-content:space-between;align-items:baseline;margin:12px 0 8px">'
+    +'<span class="num '+(over>0?'down':'up')+'" style="font-size:26px;font-weight:600">'+m0(sc)+'</span>'
+    +'<span class="num" style="color:var(--muted)">target '+m0(tgt)+'</span></div>'
+    +'<div class="bar big '+(over>0?'w':'g')+'"><span style="width:'+Math.min(100,sc/tgt*100).toFixed(1)+'%"></span></div>'
+    +'<p style="margin:12px 0 0;color:var(--ink-2);font-size:14px">'
+    +(over>0?'<b class="down">'+m0(over)+' over.</b> Not a crisis at '+m0(pl.salary)+' net, but two months in a row is a signal worth reading.'
+            :'<b class="up">'+m0(-over)+' under.</b> Everything below target flows straight into <span class="he">אנליסט</span>.')+'</p>'
+    +'<div class="call t" style="margin:14px 0 0"><strong>Why transfers sit outside the target</strong><p>The bit and PAYBOX payments going out on your card come back into your account within days — you front the table, friends settle up. They inflate the statement without being consumption, so the target measures everything else.</p></div></div></div></section>';
+
+  /* INSURANCE */
+  var covered = nd ? Math.min(1, nd.d.total>0 ? L.insPot/nd.d.total : 1) : 1;
+  h+='<section><div class="shead"><h2>Insurance sinking fund</h2><span class="note">'+m0(pl.insFund)+'/month · <span class="he">מקיף</span> over '+pl.makifN+', <span class="he">חובה</span> over '+pl.hovaN+'</span></div>'
+    +'<div class="grid2"><div class="card"><span class="eyebrow">Pot vs next bill</span>'
+    +'<div style="display:flex;justify-content:space-between;align-items:baseline;margin:12px 0 8px">'
+    +'<span class="num br" style="font-size:26px;font-weight:600">'+m0(L.insPot)+'</span>'
+    +'<span class="num" style="color:var(--muted)">'+(nd?'next: '+m2(nd.d.total)+' in '+ymLabel(nd.ym):'nothing due')+'</span></div>'
+    +'<div class="bar big '+(covered>=1?'g':'w')+'"><span style="width:'+(covered*100).toFixed(1)+'%"></span></div>'
+    +'<p style="margin:12px 0 0;color:var(--ink-2);font-size:14px">'
+    +(!nd?'Nothing falls due in the next twelve months — keep the '+m0(pl.insFund)+' running anyway so the next renewal is already paid for.'
+      :covered>=1?'<b class="up">Covered.</b> The '+ymLabel(nd.ym)+' bill is already sitting in the pot.'
+      :'<b class="amber">'+m0(nd.d.total-L.insPot)+' short</b> of the '+ymLabel(nd.ym)+' bill. At '+m0(pl.insFund)+'/month you close the gap in '+Math.ceil((nd.d.total-L.insPot)/pl.insFund)+' month'+(Math.ceil((nd.d.total-L.insPot)/pl.insFund)===1?'':'s')+'.')+'</p></div>'
+    +'<div class="card tscroll"><span class="eyebrow">The next twelve months</span><table style="margin-top:12px"><thead><tr><th>Month</th><th class="n"><span class="he">מקיף</span></th><th class="n"><span class="he">חובה</span></th><th class="n">Due</th></tr></thead><tbody>';
+  var tot12=0;
+  for(var k=1;k<=12;k++){var ym2=ymAdd(L.m,k),d2=dueIn(ym2);tot12+=d2.total;
+    h+='<tr><td>'+esc(ymLabel(ym2))+'</td><td class="n">'+(d2.makif?m0(d2.makif):'—')+'</td>'
+      +'<td class="n">'+(d2.hova?m2(d2.hova):'—')+'</td><td class="n" style="font-weight:'+(d2.total>1000?'700':'400')+';color:'+(d2.total>1000?'var(--warn)':'inherit')+'">'+(d2.total?m2(d2.total):'—')+'</td></tr>';}
+  h+='<tr class="total"><td>Twelve-month total</td><td class="n"></td><td class="n"></td><td class="n">'+m0(tot12)+'</td></tr></tbody></table></div></div></section>';
+
+  /* PORTFOLIO */
+  var totInv=inv(L);
+  h+='<section><div class="shead"><h2>Portfolio</h2><span class="note">'+m0(totInv)+' invested · satellite cap '+pc(pl.satCap,0)+'</span></div>'
+    +'<div class="card tscroll"><table><thead><tr><th>Account</th><th>Holdings</th><th class="n">Value</th><th style="width:22%;padding-left:14px">Share</th></tr></thead><tbody>'
+    +'<tr><td><b><span class="he">אנליסט</span></b> <span class="pill b">core</span></td><td style="font-size:13px">^SPX</td><td class="n">'+m0(L.analyst)+'</td>'
+    +'<td style="width:22%;padding-left:14px"><div class="bar g"><span style="width:'+(totInv?L.analyst/totInv*100:0).toFixed(1)+'%"></span></div></td></tr>'
+    +'<tr><td><b>Blink</b> <span class="pill w">satellite</span></td><td style="font-size:12.5px">'+S.tickers.blink.map(esc).join(', ')+'</td><td class="n">'+m0(L.blink)+'</td>'
+    +'<td style="width:22%;padding-left:14px"><div class="bar w"><span style="width:'+(totInv?L.blink/totInv*100:0).toFixed(1)+'%"></span></div></td></tr>'
+    +'<tr><td><b>Crypto</b> <span class="pill w">satellite</span></td><td style="font-size:12.5px">BTC-USD</td><td class="n">'+m0(L.crypto)+'</td>'
+    +'<td style="width:22%;padding-left:14px"><div class="bar w"><span style="width:'+(totInv?L.crypto/totInv*100:0).toFixed(1)+'%"></span></div></td></tr>'
+    +'<tr class="total"><td>Total invested</td><td></td><td class="n">'+m0(totInv)+'</td><td></td></tr></tbody></table></div>'
+    +'<div class="call '+(satPct>pl.satCap?'':'g')+'"><strong>'+(satPct>pl.satCap?'Satellite is over the cap':'Satellite is where it should be')+'</strong>'
+    +'<p>Blink plus crypto is <b>'+pc(satPct)+'</b> of what you have invested. '
+    +(satPct>pl.satCap?'That is past the '+pc(pl.satCap,0)+' line — trim back into <span class="he">אנליסט</span> rather than letting it ride.'
+      :'CIFR, IREN and HIVE are all bitcoin miners; add OKLO, EOSE, POET and OUST and every speculative position you own is the same trade. Harmless at this size, which is exactly why the cap matters.')+'</p></div>'
+    +'<div class="card" style="margin-top:16px"><span class="eyebrow">Watchlist</span>'
+    +'<p style="margin:9px 0 0;font-family:\'IBM Plex Mono\',monospace;font-size:13.5px;color:var(--ink-2)">'+S.tickers.watch.map(esc).join(' · ')+'</p></div></section>';
+
+  /* PROJECTION */
+  var pts=[],v=inv(L),ym3=L.m;
+  pts.push({k:ymLabel(ym3),v:v+L.bank});
+  var n3=ymDiff(L.m,pl.contractEnd);
+  for(var i2=0;i2<n3;i2++){ym3=ymAdd(ym3,1);var c3=(ym3<=pl.sprintEnd)?pl.analystSprint:(pl.analystFull+pl.satellite);
+    v=v*(1+pl.realReturn/12)+c3; if((i2+1)%6===0||i2===n3-1)pts.push({k:ymLabel(ym3),v:v+pl.emergencyTarget+pl.pikadon});}
+  h+='<section><div class="shead"><h2>Where this lands by '+esc(ymLong(pl.contractEnd))+'</h2><span class="note">Recomputed from your latest figures · '+pc(pl.realReturn,0)+' real</span></div>'
+    +'<div class="card">'+lineChart(pts,780,240)+'</div>'
+    +'<div class="grid3" style="margin-top:16px">'
+    +'<div class="card"><span class="eyebrow">Conservative — 4% real</span><div class="num" style="font-size:22px;font-weight:600;margin-top:7px">'+m0(projLo)+'</div></div>'
+    +'<div class="card" style="border-color:var(--brass)"><span class="eyebrow br">Central — '+pc(pl.realReturn,0)+' real</span><div class="num br" style="font-size:22px;font-weight:600;margin-top:7px">'+m0(proj)+'</div></div>'
+    +'<div class="card"><span class="eyebrow">Optimistic — 8% real</span><div class="num" style="font-size:22px;font-weight:600;margin-top:7px">'+m0(projHi)+'</div></div></div>'
+    +'<div class="call t"><strong>What '+m0(proj)+' buys</strong><p>A comfortable 25% <span class="he">הון עצמי</span> on a ₪2.4m apartment, at 26, owing nothing. The assumptions stay deliberately plain: no raises, no <span class="he">קרן השתלמות</span>, no pension counted, satellite contributions valued at cost. Every one of those is upside left out.</p></div></section>';
+
+  /* PLAN */
+  var inSprint = L.m < pl.sprintEnd;
+  var fixed=pl.living+pl.fuel+pl.service+pl.insFund;
+  h+='<section><div class="shead"><h2>Every month from December</h2><span class="note">'+(inSprint?'Sprint phase — car first':'Post-car — full investment')+'</span></div>'
+    +'<div class="grid2"><div class="card tscroll"><span class="eyebrow">Dec 2026 → Apr 2027 — the sprint</span><table style="margin-top:12px"><thead><tr><th>Line</th><th class="n">₪ / month</th></tr></thead><tbody>'
+    +'<tr><td><b>Net salary</b></td><td class="n" style="font-weight:700">'+pl.salary.toLocaleString()+'</td></tr>'
+    +'<tr><td>Living</td><td class="n">−'+pl.living.toLocaleString()+'</td></tr>'
+    +'<tr><td><span class="he">דלק</span></td><td class="n">−'+pl.fuel+'</td></tr>'
+    +'<tr><td><span class="he">טסט</span>, service, repairs</td><td class="n">−'+pl.service+'</td></tr>'
+    +'<tr><td>Insurance sinking fund</td><td class="n">−'+pl.insFund+'</td></tr>'
+    +'<tr><td><b>Car repayment</b></td><td class="n" style="color:var(--warn);font-weight:700">−'+pl.carMonthly.toLocaleString()+'</td></tr>'
+    +'<tr><td><b><span class="he">אנליסט</span></b></td><td class="n" style="color:var(--good);font-weight:600">−'+pl.analystSprint.toLocaleString()+'</td></tr>'
+    +'<tr><td style="color:var(--muted)">Blink — paused</td><td class="n" style="color:var(--muted)">0</td></tr>'
+    +'<tr><td>Cash / irregulars</td><td class="n">−'+pl.cashAlloc+'</td></tr>'
+    +'<tr class="total"><td>Unallocated</td><td class="n">'+(pl.salary-fixed-pl.carMonthly-pl.analystSprint-pl.cashAlloc)+'</td></tr></tbody></table></div>'
+    +'<div class="card tscroll"><span class="eyebrow">May 2027 → Mar 2031 — car paid off</span><table style="margin-top:12px"><thead><tr><th>Line</th><th class="n">₪ / month</th></tr></thead><tbody>'
+    +'<tr><td><b>Net salary</b></td><td class="n" style="font-weight:700">'+pl.salary.toLocaleString()+'</td></tr>'
+    +'<tr><td>Living</td><td class="n">−'+pl.living.toLocaleString()+'</td></tr>'
+    +'<tr><td><span class="he">דלק</span></td><td class="n">−'+pl.fuel+'</td></tr>'
+    +'<tr><td><span class="he">טסט</span>, service, repairs</td><td class="n">−'+pl.service+'</td></tr>'
+    +'<tr><td>Insurance sinking fund</td><td class="n">−'+pl.insFund+'</td></tr>'
+    +'<tr><td style="color:var(--muted)">Car — finished</td><td class="n" style="color:var(--muted)">0</td></tr>'
+    +'<tr><td><b><span class="he">אנליסט</span></b></td><td class="n" style="color:var(--good);font-weight:700">−'+pl.analystFull.toLocaleString()+'</td></tr>'
+    +'<tr><td>Blink — satellite</td><td class="n">−'+pl.satellite+'</td></tr>'
+    +'<tr><td>Cash / irregulars</td><td class="n">−'+pl.cashAlloc+'</td></tr>'
+    +'<tr class="total"><td>Unallocated</td><td class="n">'+(pl.salary-fixed-pl.analystFull-pl.satellite-pl.cashAlloc)+'</td></tr></tbody></table></div></div></section>';
+
+  /* TASKS */
+  h+='<section><div class="shead"><h2>What to do next</h2><span class="note">'+done+' of '+S.tasks.length+' done</span></div>'
+    +'<div class="card"><ol class="check" id="tasks">';
+  S.tasks.forEach(function(t){
+    h+='<li class="'+(t.done?'done':'')+'"><input type="checkbox" data-task="'+esc(t.id)+'" '+(t.done?'checked':'')
+      +' aria-label="'+esc(t.text)+'"><b>'+esc(t.text)+'</b><span>'+esc(t.d)+'</span></li>';});
+  h+='</ol></div></section>';
+
+  /* FOOTER — account identifiers deliberately omitted: this page is served
+     from a public URL, and the numbers add nothing you do not already know. */
+  h+='<footer class="foot"><p><b>Sources.</b> Bank Hapoalim current account · Isracard monthly statements · Yahoo Finance portfolios · <span class="he">הכשרה</span> motor policy · <span class="he">מענק שחרור</span> and <span class="he">פיקדון</span> rates from <span class="he">משרד הביטחון</span>, May 2026, for 28 months <span class="he">תומך לחימה</span> + 4 months <span class="he">לוחם</span>.</p>'
+    +'<p><b>Assumptions.</b> Projection compounds your latest invested balance at the chosen real rate, adding '+m0(pl.analystSprint)+'/month to '+esc(ymLong(pl.sprintEnd))+' and '+m0(pl.analystFull+pl.satellite)+'/month after, plus the <span class="he">פיקדון</span> and emergency fund held flat. No salary growth; <span class="he">קרן השתלמות</span> and pension excluded; car assumed interest-free.</p>'
+    +'<p>Not financial advice — I am not a licensed advisor. This is your own data, organised, with the reasoning shown so you can check it.</p>'
+    +'<p>Ledger last saved '+esc(S.updated||'—')+'.</p></footer>';
+
+  document.getElementById('app').innerHTML=h;
+  paintBar();
+  paintBanners();
+  wireTasks();
+}
+
+/* ---------- action bar ---------- */
+function paintBar(){
+  var b=document.getElementById('bar');
+  b.innerHTML='<button class="primary" id="logbtn">Log a month</button>'
+    +'<button class="ghost" id="editbtn">Edit latest entry</button>'
+    +'<button class="ghost" id="dlbtn">Download backup</button>'
+    +'<span class="msg" id="msg"></span>'
+    +'<span class="who">'+esc(WHO&&WHO.email?WHO.email:'')
+    +' <button class="ghost" id="outbtn" style="padding:4px 10px;font-size:12.5px">Sign out</button></span>';
+  document.getElementById('logbtn').onclick=function(){openDialog(false);};
+  document.getElementById('editbtn').onclick=function(){openDialog(true);};
+  document.getElementById('dlbtn').onclick=download;
+  document.getElementById('outbtn').onclick=signOut;
+}
+function say(t,cls){var m=document.getElementById('msg');if(m){m.textContent=t;m.className='msg '+(cls||'');}}
+
+function paintBanners(){
+  var el=document.getElementById('banners'); if(!el) return;
+  if(!PENDING){ el.innerHTML=''; return; }
+  el.innerHTML='<div class="banner warn"><b>Not saved to the server yet.</b> '
+    +'This change is on screen and kept for this tab, but the server has not accepted it. '
+    +'<button class="ghost" id="retry" style="margin-left:8px;padding:4px 10px;font-size:12.5px">Retry save</button> '
+    +'<button class="ghost" id="drop" style="padding:4px 10px;font-size:12.5px">Discard it</button></div>';
+  document.getElementById('retry').onclick=function(){ commit(PENDING,'Saved.'); };
+  document.getElementById('drop').onclick=function(){
+    if(!confirm('Discard the unsaved change and go back to what the server holds?')) return;
+    PENDING=null; writePending(null);
+    say('Reloading from the server…');
+    loadState().then(function(b){ S=b.state; render(); say('Discarded.','ok'); })
+               .catch(function(e){ say('Could not reload: '+e.message,'err'); });
+  };
+}
+
+/* ---------- dialog ---------- */
+function openDialog(editing){
+  var L=last();
+  var target = editing ? L.m : ymAdd(L.m,1);
+  var d=document.getElementById('dlg');
+  d.querySelector('#dlgtitle').textContent = editing ? 'Edit '+ymLong(L.m) : 'Log '+ymLong(target);
+  d.querySelector('#dlgsub').textContent = editing
+    ? 'Correcting a figure you already entered. Everything on the page recalculates.'
+    : 'Pre-filled with last month — change only what moved, leave the rest.';
+  var f=d.querySelector('form');
+  f.month.value=target;
+  ['bank','analyst','blink','crypto','carRem','insPot'].forEach(function(k){f[k].value=L[k];});
+  ['food','transfers','fuel','groceries','shopping','other'].forEach(function(k){f['sp_'+k].value=L.spend[k]||0;});
+  f.note.value = editing ? (L.note||'') : '';
+  f.dataset.editing = editing ? '1' : '';
+  d.showModal();
+}
+function collect(f){
+  var num=function(x){var v=parseFloat(f[x].value);return isFinite(v)?v:0;};
+  return {m:f.month.value,bank:num('bank'),analyst:num('analyst'),blink:num('blink'),crypto:num('crypto'),
+    carRem:num('carRem'),insPot:num('insPot'),
+    spend:{food:num('sp_food'),transfers:num('sp_transfers'),fuel:num('sp_fuel'),
+      groceries:num('sp_groceries'),shopping:num('sp_shopping'),other:num('sp_other')},
+    note:f.note.value.trim()};
+}
+
+/* ---------- backup ----------
+   The server is the source of truth; this is a copy for the repo, so
+   data/state.json can be kept current as a seed and a way back. */
+function download(){
+  var out=JSON.parse(JSON.stringify(S));
+  var blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url; a.download='state.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url);},1000);
+  say('Downloaded. Commit it over data/state.json to refresh the seed.','ok');
+}
+
+/* ---------- tasks ---------- */
+function wireTasks(){
+  var list=document.getElementById('tasks'); if(!list) return;
+  list.addEventListener('change',function(ev){
+    var cb=ev.target; if(!cb.dataset||!cb.dataset.task) return;
+    var next=JSON.parse(JSON.stringify(S));
+    var t=next.tasks.filter(function(x){return x.id===cb.dataset.task;})[0];
+    if(!t) return;
+    t.done=cb.checked;
+    commit(next,'Checklist saved.');
+  });
+}
+
+/* ---------- dashboard ---------- */
+function boot(){
+  document.getElementById('gate').hidden=true;
+  document.getElementById('app').hidden=false;
+  PENDING=readPending();
+  render();
+  var d=document.getElementById('dlg');
+  d.querySelector('#cancel').onclick=function(){d.close();};
+  d.querySelector('form').addEventListener('submit',function(ev){
+    ev.preventDefault();
+    var f=ev.target, row=collect(f);
+    if(!/^\d{4}-\d{2}$/.test(row.m)){say('Pick a month first.','err');return;}
+    var next=JSON.parse(JSON.stringify(S));
+    next.months=next.months.filter(function(r){return r.m!==row.m;});
+    next.months.push(row);
+    next.months.sort(function(a,b){return a.m<b.m?-1:1;});
+    d.close();
+    commit(next,'Logged '+ymLong(row.m)+'.');
+  });
+  if(PENDING) paintBanners();
+}
+
+/* ---------- sign-in ---------- */
+function showGate(msg){
+  document.getElementById('app').hidden=true;
+  var g=document.getElementById('gate');
+  g.hidden=false;
+  document.getElementById('gate-err').textContent=msg||'';
+}
+function signOut(){
+  TOKEN=null; WHO=null; S=null;
+  try{ if(window.google&&google.accounts&&google.accounts.id) google.accounts.id.disableAutoSelect(); }catch(e){}
+  showGate('Signed out.');
+}
+
+/** Google hands us an ID token; the server decides what it is worth. */
+function onCredential(resp){
+  TOKEN=resp && resp.credential;
+  if(!TOKEN){ showGate('Google returned no credential. Try again.'); return; }
+  document.getElementById('gate-err').textContent='Checking your account…';
+  loadState().then(function(body){
+    S=body.state; WHO={email:body.email,name:body.name};
+    boot();
+    if(PENDING) commit(PENDING,'Saved the change from before.');
+  }).catch(function(e){
+    TOKEN=null;
+    showGate(e.status===403
+      ? 'Signed in, but this account has no ledger here.'
+      : 'Could not load the ledger: '+e.message);
+  });
+}
+
+/* The client id is public, but it lives in a Netlify env var rather than in
+   this file, so the site can be redeployed or forked without editing HTML. */
+function start(){
+  fetch('/api/config',{cache:'no-store'})
+    .then(function(r){ return r.json(); })
+    .then(function(cfg){
+      if(!cfg.clientId){
+        showGate('Sign-in is not configured yet — set GOOGLE_CLIENT_ID in Netlify.');
+        return;
+      }
+      var s=document.createElement('script');
+      s.src='https://accounts.google.com/gsi/client';
+      s.async=true; s.defer=true;
+      s.onerror=function(){ showGate('Could not reach Google sign-in.'); };
+      s.onload=function(){
+        google.accounts.id.initialize({client_id:cfg.clientId,callback:onCredential});
+        google.accounts.id.renderButton(document.getElementById('gsi-button'),
+          {theme:'outline',size:'large',text:'signin_with',shape:'rectangular'});
+        google.accounts.id.prompt();
+      };
+      document.head.appendChild(s);
+    })
+    .catch(function(){
+      showGate('Could not reach the server. If you are opening this file directly, '
+              +'run it through Netlify or `netlify dev` instead.');
+    });
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
+</script>
+</body></html>
