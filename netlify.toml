@@ -1,0 +1,25 @@
+[build]
+  # Only `site/` is published. data/state.json deliberately stays outside it:
+  # anything in the publish directory is world-readable, and the ledger is not.
+  publish = "site"
+  command = "echo 'static site — nothing to build'"
+
+[functions]
+  node_bundler = "esbuild"
+  # The seed is bundled with the function, not served from the site.
+  included_files = ["data/state.json"]
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    # The page is a shell; the figures arrive from /api/state. Still, never
+    # let an intermediary hold a copy of it.
+    Cache-Control = "no-store"

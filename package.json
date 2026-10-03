@@ -1,0 +1,19 @@
+{
+  "name": "keva-ledger-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Netlify functions backing the Keva Ledger dashboard",
+  "type": "module",
+  "scripts": {
+    "check:api": "node tools/api-check.mjs",
+    "check:browser": "node tools/browser-check.mjs",
+    "check": "npm run check:api && npm run check:browser"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0",
+    "jose": "^5.9.6"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.49.0"
+  }
+}

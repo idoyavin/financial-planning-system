@@ -1,0 +1,104 @@
+{
+  "v": 1,
+  "updated": "2026-08-22",
+  "plan": {
+    "salary": 14000,
+    "living": 2500,
+    "fuel": 241,
+    "service": 400,
+    "insFund": 611,
+    "carTotal": 54000,
+    "carMonthly": 7100,
+    "grant": 18500,
+    "pikadon": 27100,
+    "analystSprint": 2500,
+    "analystFull": 9000,
+    "satellite": 600,
+    "cashAlloc": 648,
+    "emergencyTarget": 11500,
+    "hovaYear": 2470,
+    "hovaN": 8,
+    "makifYear": 4857,
+    "makifN": 3,
+    "sprintStart": "2026-12",
+    "sprintEnd": "2027-04",
+    "contractEnd": "2031-03",
+    "realReturn": 0.06,
+    "satCap": 0.1,
+    "spendTarget": 2500
+  },
+  "months": [
+    {
+      "m": "2026-08",
+      "bank": 2994,
+      "analyst": 24323,
+      "blink": 786,
+      "crypto": 1100,
+      "carRem": 54000,
+      "insPot": 0,
+      "spend": {
+        "food": 1321,
+        "transfers": 387,
+        "fuel": 241,
+        "groceries": 124,
+        "shopping": 107,
+        "other": 244
+      },
+      "note": "Baseline — 7-month averages from the Isracard statements"
+    }
+  ],
+  "tickers": {
+    "blink": ["GOOGL", "NVDA", "AMZN", "EOSE", "SOFI", "CIFR", "OUST", "IREN"],
+    "watch": ["ENS", "IREN", "CIFR", "HIVE", "OUST", "EOSE", "SOFI", "POET", "GOOGL", "OKLO", "NVDA"]
+  },
+  "tasks": [
+    {
+      "id": "t1",
+      "text": "Get your name on the מקיף in writing",
+      "d": "073-7801186, סיגל at זהר & נאמן. You qualify under the driver clause, but the policy is in your mother's name and you are the main driver. Confirm the ₪750 excess while you are on the phone.",
+      "done": false
+    },
+    {
+      "id": "t2",
+      "text": "Settle the car terms in writing",
+      "d": "Who you owe, ₪54,000, whether any interest applies, and the ₪7,100/month schedule from December. Family money goes wrong precisely because nobody wrote it down.",
+      "done": false
+    },
+    {
+      "id": "t3",
+      "text": "Check your Poalim details in the אזור אישי",
+      "d": "The מענק pays to whatever account is on file within 60 days of 30 September. A stale account number is the one way to delay ₪18,500.",
+      "done": false
+    },
+    {
+      "id": "t4",
+      "text": "1 December — set the sprint running",
+      "d": "₪7,100 to the car, ₪2,500 to אנליסט, ₪611 to a separate account for insurance. Pause the Blink contributions.",
+      "done": false
+    },
+    {
+      "id": "t5",
+      "text": "Diary it: 1 May 2027",
+      "d": "Last car payment clears 30 April. On 1 May raise אנליסט from ₪2,500 to ₪9,000 and restart the ₪600 to Blink — the same day.",
+      "done": false
+    },
+    {
+      "id": "t6",
+      "text": "Pull your נתוני אשראי report",
+      "d": "Free from Bank of Israel. The ק.ל.ס loan is in your name — know how it is recorded, years before it matters for a mortgage.",
+      "done": false
+    },
+    {
+      "id": "t7",
+      "text": "Keep the satellite under 10%",
+      "d": "Blink plus crypto, checked each quarter. Trim back rather than letting a winner run past the cap.",
+      "done": false
+    },
+    {
+      "id": "t8",
+      "text": "Decide what the פיקדון is for — then don't touch it",
+      "d": "Studies or a deposit. Write the decision down. Restricted money gets spent badly precisely because it does not feel real.",
+      "done": false
+    }
+  ]
+}
